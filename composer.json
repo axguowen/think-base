@@ -1,0 +1,24 @@
+{
+    "name": "axguowen/think-base",
+    "description": "The base classes for ThinkPHP",
+    "keywords": [
+        "thinkphp",
+        "base",
+        "classes"
+    ],      
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "axguowen",
+            "email": "axguowen@qq.com"
+        }
+    ],
+    "require": {
+        "topthink/framework": "^6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "think\\base\\": "src"
+        }
+    }
+}
