@@ -82,7 +82,7 @@ class Request extends Base
             '腾讯新闻' => '/qqnews/i',
             '西瓜视频' => '/VideoArticle/i',
             '百度APP' => '/baiduboxapp/i',
-            'UC浏览器' => '/UCBrowser|UCWEB|UBrowser/i',
+            'UC浏览器' => '/UCBrowser|UCWEB|UBrowser|UCLite/i',
             'QQ浏览器' => '/qqbrowser/i',
             '搜狗浏览器' => '/Sogou/i',
             '猎豹浏览器' => '/MXiOS|LieBaoFast/i',
