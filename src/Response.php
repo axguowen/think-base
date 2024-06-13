@@ -94,7 +94,7 @@ class Response extends Base
             $message = $this->getMessage($code);
         }
         // 返回
-        return self::create([
+        return static::create([
             'code' => $code,
             'message' => $message,
             'data' => $data
@@ -161,7 +161,7 @@ class Response extends Base
     public function buildView(string $template = '', $vars = [], int $code = 200, $filter = null)
     {
         // 返回
-        return self::create($template, 'view', $code)->assign($vars)->filter($filter);
+        return static::create($template, 'view', $code)->assign($vars)->filter($filter);
     }
 
     /**
@@ -176,7 +176,7 @@ class Response extends Base
     public function buildDisplay(string $content = '', $vars = [], int $code = 200, $filter = null)
     {
         // 返回
-        return self::create($content, 'view', $code)->isContent(true)->assign($vars)->filter($filter);
+        return static::create($content, 'view', $code)->isContent(true)->assign($vars)->filter($filter);
     }
 
     /**
@@ -189,7 +189,7 @@ class Response extends Base
     {
         // 错误信息是数组
         if(is_array($error)){
-            return self::create($error, 'json');
+            return static::create($error, 'json');
         }
         return $this->buildFailed(self::FAILED, $error);
     }
@@ -210,7 +210,7 @@ class Response extends Base
         // 构造返回数据
         $data = '<script>window.top.location.href="' . $url . '";</script>';
         // 返回响应
-        return self::create($data, 'html', $code);
+        return static::create($data, 'html', $code);
     }
 
     /**
@@ -244,7 +244,7 @@ class Response extends Base
         // 渲染的内容
         $content = '<html><head><title>' . $title . '</title></head><body><center><h1>' . $title . '</h1></center><hr><center>Nginx</center></body></html>';
         // 返回
-        return self::create($content, 'view', $code)->isContent(true);
+        return static::create($content, 'view', $code)->isContent(true);
     }
 
     /**
@@ -261,8 +261,7 @@ class Response extends Base
             return $content;
         }
         // 返回
-        echo $content;
-        exit();
+        return static::create($content)->contentType('text/plain');
     }
 
     /**

@@ -224,7 +224,7 @@ abstract class Controller
      */
     protected function buildEcho($content = '', $debug = false)
     {
-        return $this->response->buildEcho($content);
+        return $this->response->buildEcho($content, $debug);
     }
 
     /**
