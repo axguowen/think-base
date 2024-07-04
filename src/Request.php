@@ -77,6 +77,7 @@ class Request extends Base
             '抖音极速版' => '/aweme_lite/i',
             '抖音APP' => '/ByteLocale|BytedanceWebview/i',
             '头条APP' => '/NewsArticle|ttwebview|open_news/i',
+            '快手APP' => '/KsWebView/i',
             '微信小程序' => '/miniprogram/i',
             '腾讯视频' => '/qqlivebrowser/i',
             '腾讯新闻' => '/qqnews/i',
