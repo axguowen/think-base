@@ -11,9 +11,20 @@
 
 namespace think\base;
 
-use think\Request as Base;
+use think\Request as ThinkRequest;
+use think\webworker\support\Request as WebworkerRequest;
 
-class Request extends Base
+// 如果存在webworker，则使用webworker的Request类
+if (class_exists(WebworkerRequest::class)) {
+    class BaseRequest extends WebworkerRequest
+    {
+    }
+} else {
+    class BaseRequest extends ThinkRequest
+    {
+    }
+}
+class Request extends BaseRequest
 {
     /**
      * 获取当前访问设备UA
