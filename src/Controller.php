@@ -242,6 +242,6 @@ abstract class Controller
             throw new \think\Exception('method not exists:' . static::class . '->' . $method . '()', Response::ERROR);
         }
         // 返回404
-        return $this->buildError(403);
+        return $this->buildError(404);
     }
 }
