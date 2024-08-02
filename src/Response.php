@@ -244,7 +244,7 @@ class Response extends Base
         // 渲染的内容
         $content = '<html><head><title>' . $title . '</title></head><body><center><h1>' . $title . '</h1></center><hr><center>Nginx</center></body></html>';
         // 返回
-        return static::create($content, 'view', $code)->isContent(true);
+        return static::create($content, 'html', $code);
     }
 
     /**
