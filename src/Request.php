@@ -12,7 +12,7 @@
 namespace think\base;
 
 use think\Request as ThinkRequest;
-use think\webworker\support\Request as WebworkerRequest;
+use think\webworker\support\think\Request as WebworkerRequest;
 
 // 如果存在webworker，则使用webworker的Request类
 if (class_exists(WebworkerRequest::class)) {
