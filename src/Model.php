@@ -223,6 +223,7 @@ abstract class Model extends Base
         // 如果缓存键名存在但是无效
         if($cacheBuilder->exists() && 5 !== $cacheBuilder->type()){
             $cacheBuilder->del();
+            return false;
         }
         // 如果当前指定的数据为空则更新全部缓存字段
         if(empty($data)){
