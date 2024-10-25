@@ -91,7 +91,7 @@ class Request extends BaseRequest
             '抖音APP' => '/ByteLocale|BytedanceWebview/i',
             '头条极速版' => '/NewsLite/i',
             '头条APP' => '/NewsArticle|ttwebview|open_news/i',
-            '快手APP' => '/KsWebView/i',
+            '快手APP' => '/KsWebView|ksNebula|Kwai/i',
             '支付宝' => '/Alipay/i',
             '哔哩哔哩' => '/Bili/i',
             '微信小程序' => '/miniprogram/i',
