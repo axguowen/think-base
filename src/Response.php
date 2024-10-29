@@ -21,6 +21,8 @@ class Response extends Base
     const NOT_LOGIN = 100;
     // 已登录
     const HAS_LOGINED = 101;
+    // 二次登录
+    const TWO_STEP_LOGIN = 102;
     // 需要短信验证
     const NEED_SMS_VERIFY = 201;
     // 失败
@@ -44,6 +46,7 @@ class Response extends Base
         self::SUCCESS => '操作成功',
         self::NOT_LOGIN => '未登录',
         self::HAS_LOGINED => '已登录',
+        self::TWO_STEP_LOGIN => '二步登录',
         self::NEED_SMS_VERIFY => '需要完成短信验证',
         self::FAILED => '操作失败',
         self::PARAMS_ERROR => '参数错误',
