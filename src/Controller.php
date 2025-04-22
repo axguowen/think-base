@@ -153,16 +153,6 @@ abstract class Controller
     }
 
     /**
-     * 手动返回验证错误响应信息
-     * @param array|string $error 错误信息
-     * @return \think\response\Json
-     */
-    protected function buildValidateFailed($error)
-    {
-        return $this->response->buildValidateFailed($error);
-    }
-
-    /**
      * 重定向输出
      * @access protected
      * @param string $url 重定向地址

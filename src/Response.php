@@ -183,21 +183,6 @@ class Response extends Base
     }
 
     /**
-     * 手动返回验证错误响应信息
-     * @access public
-     * @param array|string $error 错误信息
-     * @return \think\response\Json
-     */
-    public function buildValidateFailed($error)
-    {
-        // 错误信息是数组
-        if(is_array($error)){
-            return static::create($error, 'json');
-        }
-        return $this->buildFailed(self::FAILED, $error);
-    }
-
-    /**
      * 重定向输出
      * @access public
      * @param string $url 重定向地址
