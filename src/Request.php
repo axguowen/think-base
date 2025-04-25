@@ -85,7 +85,7 @@ class Request extends BaseRequest
         // 匹配规则
         $rules = [
             '微信' => '/MicroMessenger/i',
-            '头条APP' => '/NewsArticle|open_news/i',
+            '头条APP' => '/NewsArticle|open_news|news_article/i',
             'Tiktok抖音' => '/musical_ly/i',
             '抖音极速版' => '/aweme_lite/i',
             '抖音火山版' => '/aweme_hotsoon/i',
