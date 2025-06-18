@@ -136,4 +136,60 @@ class Request extends BaseRequest
         // 返回
 		return $browser;
     }
+
+    /**
+     * 设备型号
+     * @access public
+     * @param string $value 字段原始值
+     * @param array $data 当前所有数据
+     * @return string
+     */
+    public function deviceModel()
+    {
+        // 转为小写
+        $ua = strtolower($this->ua());
+		// 如果包含build
+		if(false !== strpos($ua, ' build/')){
+			// 截取
+			$firstStr = explode(' build/', $ua);
+			if(isset($firstStr[0])){
+				$ua = explode('; ', $firstStr[0]);
+				if(is_array($ua)){
+					return $ua[count($ua) - 1];
+				}
+			}
+		}
+		// 如果包含hmscore
+		if(false !== strpos($ua, '; hmscore')){
+			// 截取
+			$firstStr = explode('; hmscore', $ua);
+			if(isset($firstStr[0])){
+				$ua = explode('; ', $firstStr[0]);
+				if(is_array($ua)){
+					return $ua[count($ua) - 1];
+				}
+			}
+		}
+		// 如果包含wv
+		if(false !== strpos($ua, '; wv)')){
+			// 截取
+			$firstStr = explode('; wv)', $ua);
+			if(isset($firstStr[0])){
+				$ua = explode('; ', $firstStr[0]);
+				if(is_array($ua)){
+					return $ua[count($ua) - 1];
+				}
+			}
+		}
+		// 如果包含iphone;
+		if(false !== strpos($ua, 'iphone')){
+			return 'iphone';
+		}
+		// 如果包含windows nt;
+		if(false !== strpos($ua, 'windows nt')){
+			return 'windows';
+		}
+        // 返回空
+		return '';
+    }
 }
