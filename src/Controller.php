@@ -128,6 +128,31 @@ abstract class Controller
     }
 
     /**
+     * 响应成功
+     * @access protected
+     * @param array $data 返回数据
+     * @param string $message 提示信息
+     * @return \think\response\Json
+     */
+    protected function jsonSuccess($data = [], $message = null)
+    {
+        return Response::success($data, $message);
+    }
+
+    /**
+     * 响应失败
+     * @access protected
+     * @param string $message 错误信息
+     * @param int $code 错误码
+     * @param array $data 返回数据
+     * @return \think\response\Json
+     */
+    protected function jsonFailed($message = null, $code = null, $data = [])
+    {
+        return Response::failed($message, $code, $data);
+    }
+
+    /**
      * 返回成功
      * @access protected
      * @param array $data 返回数据
@@ -136,7 +161,7 @@ abstract class Controller
      */
     protected function buildSuccess($data = [], $message = null)
     {
-        return $this->response->buildSuccess($data, $message);
+        return Response::success($data, $message);
     }
 
     /**
@@ -149,7 +174,7 @@ abstract class Controller
      */
     protected function buildFailed($code = null, $message = null, $data = [])
     {
-        return $this->response->buildFailed($code, $message, $data);
+        return Response::failed($message, $code, $data);
     }
 
     /**
@@ -161,7 +186,7 @@ abstract class Controller
      */
     protected function buildRedirect(string $url = '', int $code = 302)
     {
-        return $this->response->buildRedirect($url, $code);
+        return Response::redirect($url, $code);
     }
 
     /**
@@ -172,7 +197,19 @@ abstract class Controller
      */
     public function buildError(int $code = 404)
     {
-        return $this->response->buildError($code);
+        return Response::error($code);
+    }
+
+    /**
+     * 内容直接输出
+     * @access public
+     * @param string $content
+     * @param bool $debug
+     * @return string
+     */
+    protected function buildEcho($content = '', $debug = false)
+    {
+        return Response::echo($content, $debug);
     }
 
     /**
@@ -203,18 +240,6 @@ abstract class Controller
 
         // 不为空则拼接
         return $title . ' - ' . $appName;
-    }
-
-    /**
-     * 内容直接输出
-     * @access public
-     * @param string $content
-     * @param bool $debug
-     * @return string
-     */
-    protected function buildEcho($content = '', $debug = false)
-    {
-        return $this->response->buildEcho($content, $debug);
     }
 
     /**
