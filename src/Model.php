@@ -28,6 +28,12 @@ abstract class Model extends Base
     protected $cacheKey = '';
 
     /**
+     * 额外缓存键规则
+     * @var array
+     */
+    protected $extraCacheKeys = [];
+
+    /**
      * 数据非法时的缓存值, 防止缓存穿透
      * @var string
      */
@@ -60,13 +66,24 @@ abstract class Model extends Base
     }
 
     /**
-     * 数据缓存键名构造器字段获取器
-     * @param string $value 字段原始值
-     * @param array $data 当前所有数据
+     * 数据缓存键名构造器
+     * @access public
+     * @param string $cacheName 指定缓存标识
      * @return \think\redisclient\Builder|null
      */
-    public function getCacheBuilder()
+    public function getCacheBuilder($cacheName = null)
     {
+        // 获取缓存键名
+        $cacheKey = $this->cacheKey;
+        // 如果指定了缓存标识
+        if(!is_null($cacheName)){
+            // 如果不存在额外缓存键规则
+            if(!isset($this->extraCacheKeys[$cacheName]) || empty($this->extraCacheKeys[$cacheName])){
+                return null;
+            }
+            // 设置缓存键名
+            $cacheKey = $this->extraCacheKeys[$cacheName];
+        }
         // 获取缓存客户端
         $cacheClient = $this->getCacheClient();
         // 如果返回空
@@ -74,16 +91,17 @@ abstract class Model extends Base
             return null;
         }
         // 返回
-        return $cacheClient->key($this->cacheKey, $this->getData());
+        return $cacheClient->key($cacheKey, $this->getData());
     }
 
     /**
      * 通过缓存获取单个数据
      * @access public
      * @param mixed $data 查询数据
+     * @param string $cacheName 指定缓存标识
      * @return mixed
      */
-    public static function find($data = null)
+    public static function find($data = null, $cacheName = null)
     {
         // 实例化当前模型
         $model = new static();
@@ -102,7 +120,7 @@ abstract class Model extends Base
         // 设置原始数据
         $model->data($originData);
         // 获取缓存数据
-        $cacheData = $model->findCacheData();
+        $cacheData = $model->findCacheData($cacheName);
         // 如果不为空
         if(!empty($cacheData)){
             // 如果请求的数据为无效的
@@ -118,18 +136,19 @@ abstract class Model extends Base
             return $model->newInstance($cacheData, $updateWhere);
         }
         // 返回空则从数据库读取
-        return $model->findDbData(is_null($cacheData));
+        return $model->findDbData(is_null($cacheData), $cacheName);
     }
 
     /**
      * 读取缓存数据
      * @access protected
+     * @param string $cacheName 指定缓存标识
      * @return mixed
      */
-    protected function findCacheData()
+    protected function findCacheData($cacheName = null)
     {
         // 缓存键名构造器
-        $cacheBuilder = $this->getCacheBuilder();
+        $cacheBuilder = $this->getCacheBuilder($cacheName);
         // 不存在
         if(is_null($cacheBuilder)){
             return null;
@@ -150,12 +169,13 @@ abstract class Model extends Base
      * 从数据库查询数据并更新缓存
      * @access protected
      * @param bool $disableCache 是否禁用缓存
+     * @param string $cacheName 指定缓存标识
      * @return mixed
      */
-    protected function findDbData($disableCache = false)
+    protected function findDbData($disableCache = false, $cacheName = null)
     {
         // 缓存键名构造器
-        $cacheBuilder = $this->getCacheBuilder();
+        $cacheBuilder = $this->getCacheBuilder($cacheName);
 
         // 如果缓存键名构造器不存在或者禁用了缓存则直接从数据库读取并返回
         if(is_null($cacheBuilder) || $disableCache){
@@ -210,41 +230,52 @@ abstract class Model extends Base
      */
     public function updateCache(array $data = [])
     {
-        // 缓存键名构造器
-        $cacheBuilder = $this->getCacheBuilder();
-        // 不存在
-        if(is_null($cacheBuilder)){
-            return false;
-        }
-        // 如果缓存键名不存在且指定了要缓存的数据则返回
-        if(!$cacheBuilder->exists() && !empty($data)){
-            return false;
-        }
-        // 如果缓存键名存在但是无效
-        if($cacheBuilder->exists() && 5 !== $cacheBuilder->type()){
-            $cacheBuilder->del();
-            return false;
-        }
+        // 要更新的数据
+        $updateData = $data;
         // 如果当前指定的数据为空则更新全部缓存字段
-        if(empty($data)){
-            $data = $this->getData();
+        if(empty($updateData)){
+            $updateData = $this->getData();
         }
-
         // 不缓存的字段
         foreach ($this->cacheFieldExcept as $key) {
-            if (array_key_exists($key, $data)) {
-                unset($data[$key]);
+            if (array_key_exists($key, $updateData)) {
+                unset($updateData[$key]);
             }
         }
-
-        // 写入正常缓存
-        $updateStatus = $cacheBuilder->hMset($data);
-        // 缓存时间大于0
-        if($updateStatus && $this->cacheExpire > 0){
-            $cacheBuilder->expire($this->cacheExpire);
+        // 获取缓存标识列表
+        $cacheNames = [null];
+        // 遍历额外缓存标识
+        foreach ($this->extraCacheKeys as $key => $value) {
+            // 记录
+            $cacheNames[] = $key;
         }
-        // 返回状态
-        return $updateStatus;
+        // 遍历缓存标识列表
+        foreach ($cacheNames as $cacheName) {
+            // 缓存键名构造器
+            $cacheBuilder = $this->getCacheBuilder($cacheName);
+            // 不存在
+            if(is_null($cacheBuilder)){
+                continue;
+            }
+            // 如果缓存键名不存在且指定了要缓存的数据则返回
+            if(!$cacheBuilder->exists() && !empty($data)){
+                continue;
+            }
+            // 如果缓存键名存在但是无效
+            if($cacheBuilder->exists() && 5 !== $cacheBuilder->type()){
+                // 删除缓存
+                $cacheBuilder->del();
+                continue;
+            }
+            // 更新缓存数据
+            $updateStatus = $cacheBuilder->hMset($updateData);
+            // 设置了缓存时间则更新缓存时间
+            if($updateStatus && $this->cacheExpire > 0){
+                $cacheBuilder->expire($this->cacheExpire);
+            }
+        }
+        // 返回
+        return true;
     }
 
     /**
@@ -254,18 +285,30 @@ abstract class Model extends Base
      */
     public function deleteCache()
     {
-        // 缓存键名构造器
-        $cacheBuilder = $this->getCacheBuilder();
-        // 不存在
-        if(is_null($cacheBuilder)){
-            return false;
+        // 获取缓存标识列表
+        $cacheNames = [null];
+        // 遍历额外缓存标识
+        foreach ($this->extraCacheKeys as $key => $value) {
+            // 记录
+            $cacheNames[] = $key;
         }
-        // 缓存不存在
-        if(!$cacheBuilder->exists()){
-            return true;
+        // 遍历缓存标识列表
+        foreach ($cacheNames as $cacheName) {
+            // 缓存键名构造器
+            $cacheBuilder = $this->getCacheBuilder($cacheName);
+            // 不存在
+            if(is_null($cacheBuilder)){
+                continue;
+            }
+            // 缓存不存在
+            if(!$cacheBuilder->exists()){
+                continue;
+            }
+            // 删除缓存
+            $cacheBuilder->unlink();
         }
-        // 返回状态
-        return $cacheBuilder->unlink();
+        // 返回
+        return true;
     }
 
     // +=======================
