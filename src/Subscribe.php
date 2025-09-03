@@ -28,12 +28,6 @@ abstract class Subscribe
     protected $app;
 
     /**
-     * Response实例
-     * @var \think\Response
-     */
-    protected $response;
-
-    /**
      * 构造方法
      * @access public
      * @param App $app 应用对象
@@ -42,6 +36,5 @@ abstract class Subscribe
     {
         $this->app = $app;
         $this->request = $this->app->request;
-        $this->response = $this->app->response;
     }
 }

@@ -43,12 +43,6 @@ abstract class Controller
     protected $middleware = [];
 
     /**
-     * Response实例
-     * @var \think\Response
-     */
-    protected $response;
-
-    /**
      * 控制器标题
      * @var string
      */
@@ -63,7 +57,6 @@ abstract class Controller
     {
         $this->app = $app;
         $this->request = $this->app->request;
-        $this->response = $this->app->response;
         // 如果是get请求
         if($this->request->isGet()){
             // 模板变量赋值
