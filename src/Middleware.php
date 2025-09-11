@@ -28,6 +28,12 @@ abstract class Middleware
     protected $app;
 
     /**
+     * 响应类名
+     * @var string
+     */
+    protected $responseClassName = Response::class;
+
+    /**
      * 构造方法
      * @access public
      * @param App $app 应用对象
@@ -47,7 +53,7 @@ abstract class Middleware
      */
     protected function jsonSuccess($data = [], $message = null)
     {
-        return Response::success($data, $message);
+        return call_user_func_array([$this->responseClassName, 'success'], [$data, $message]);
     }
 
     /**
@@ -60,31 +66,41 @@ abstract class Middleware
      */
     protected function jsonFailed($message = null, $code = null, $data = [])
     {
-        return Response::failed($message, $code, $data);
+        return call_user_func_array([$this->responseClassName, 'failed'], [$message, $code, $data]);
     }
 
     /**
-     * 响应成功
+     * 重定向输出
      * @access protected
-     * @param array $data 返回数据
-     * @param string $message 提示信息
-     * @return \think\response\Json
+     * @param string $url 重定向地址
+     * @param int $code 状态码
+     * @return \think\response\Html
      */
-    protected function buildSuccess($data = [], $message = null)
+    protected function buildRedirect(string $url = '', int $code = 302)
     {
-        return Response::success($data, $message);
+        return call_user_func_array([$this->responseClassName, 'redirect'], [$url, $code]);
     }
 
     /**
-     * 响应失败
-     * @access protected
-     * @param int $code 错误码
-     * @param string $message 提示信息
-     * @param array $data 返回数据
-     * @return \think\response\Json
+     * 错误页输出
+     * @access public
+     * @param int $code 状态码
+     * @return \think\response\View
      */
-    protected function buildFailed($code = null, $message = null, $data = [])
+    public function buildError(int $code = 404)
     {
-        return Response::failed($message, $code, $data);
+        return call_user_func_array([$this->responseClassName, 'error'], [$code]);
+    }
+
+    /**
+     * 内容直接输出
+     * @access public
+     * @param string $content
+     * @param bool $debug
+     * @return string
+     */
+    protected function buildEcho($content = '', $debug = false)
+    {
+        return call_user_func_array([$this->responseClassName, 'echo'], [$content, $debug]);
     }
 }

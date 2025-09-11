@@ -49,6 +49,12 @@ abstract class Controller
     protected $headTitle = '';
 
     /**
+     * 响应类名
+     * @var string
+     */
+    protected $responseClassName = Response::class;
+
+    /**
      * 构造方法
      * @access public
      * @param App $app 应用对象
@@ -129,7 +135,7 @@ abstract class Controller
      */
     protected function jsonSuccess($data = [], $message = null)
     {
-        return Response::success($data, $message);
+        return call_user_func_array([$this->responseClassName, 'success'], [$data, $message]);
     }
 
     /**
@@ -142,32 +148,7 @@ abstract class Controller
      */
     protected function jsonFailed($message = null, $code = null, $data = [])
     {
-        return Response::failed($message, $code, $data);
-    }
-
-    /**
-     * 返回成功
-     * @access protected
-     * @param array $data 返回数据
-     * @param string $message 提示信息
-     * @return \think\response\Json
-     */
-    protected function buildSuccess($data = [], $message = null)
-    {
-        return Response::success($data, $message);
-    }
-
-    /**
-     * 返回失败
-     * @access protected
-     * @param int $code 错误码
-     * @param string $message 提示信息
-     * @param array $data 返回数据
-     * @return \think\response\Json
-     */
-    protected function buildFailed($code = null, $message = null, $data = [])
-    {
-        return Response::failed($message, $code, $data);
+        return call_user_func_array([$this->responseClassName, 'failed'], [$message, $code, $data]);
     }
 
     /**
@@ -179,7 +160,7 @@ abstract class Controller
      */
     protected function buildRedirect(string $url = '', int $code = 302)
     {
-        return Response::redirect($url, $code);
+        return call_user_func_array([$this->responseClassName, 'redirect'], [$url, $code]);
     }
 
     /**
@@ -190,7 +171,7 @@ abstract class Controller
      */
     public function buildError(int $code = 404)
     {
-        return Response::error($code);
+        return call_user_func_array([$this->responseClassName, 'error'], [$code]);
     }
 
     /**
@@ -202,7 +183,7 @@ abstract class Controller
      */
     protected function buildEcho($content = '', $debug = false)
     {
-        return Response::echo($content, $debug);
+        return call_user_func_array([$this->responseClassName, 'echo'], [$content, $debug]);
     }
 
     /**
