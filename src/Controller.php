@@ -79,17 +79,6 @@ abstract class Controller
     {}
 
     /**
-     * 默认方法
-     * @access public
-     * @return Response
-     */
-    public function index()
-    {
-        // 渲染输出
-        return $this->app->view->fetch();
-    }
-
-    /**
      * 验证数据
      * @access protected
      * @param  array        $data     数据
