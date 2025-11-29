@@ -49,6 +49,7 @@ class Request extends BaseRequest
         $rules = [
 			'百度爬虫' => '/Baiduspider/i',
 			'其它爬虫' => '/Googlebot|360spider|Sogou spider|YodaoBot/i',
+			'鸿蒙6' => '/OpenHarmony/i',
 			'鸿蒙' => '/HarmonyOS/i',
 			'iOS' => '/\biPhone|\biPod|\biPad|AppleCoreMedia/i',
 			'安卓' => '/Android/i',
