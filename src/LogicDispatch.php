@@ -26,10 +26,16 @@ abstract class LogicDispatch
     protected $app;
 
     /**
-     * 调度信息
-     * @var mixed
+     * 控制器名
+     * @var string
      */
-    protected $dispatch;
+    protected $controller;
+
+    /**
+     * 方法名
+     * @var string
+     */
+    protected $method;
 
     /**
      * 参数
@@ -43,10 +49,11 @@ abstract class LogicDispatch
      * @param App $app
      * @param array $param
      */
-    public function __construct(App $app, $dispatch, array $param = [])
+    public function __construct(App $app, $controller, $method, array $param = [])
     {
         $this->app  = $app;
-        $this->dispatch = $dispatch;
+        $this->controller = $controller;
+        $this->method = $method;
         $this->param = $param;
         // 初始化
         $this->init();
@@ -72,21 +79,31 @@ abstract class LogicDispatch
     }
 
     /**
-     * 获取调度信息
+     * 获取控制器名
      * @access public
      * @return mixed
      */
-    public function getDispatch()
+    public function getController()
     {
-        return $this->dispatch;
+        return $this->controller;
     }
 
     /**
-     * 获取调度信息
+     * 获取方法名
      * @access public
      * @return mixed
      */
-    public function getParam(): array
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * 获取参数
+     * @access public
+     * @return mixed
+     */
+    public function getParam()
     {
         return $this->param;
     }
@@ -100,7 +117,7 @@ abstract class LogicDispatch
 
     public function __sleep()
     {
-        return ['dispatch', 'param'];
+        return ['controller', 'method', 'param'];
     }
 
     public function __wakeup()
@@ -111,7 +128,8 @@ abstract class LogicDispatch
     public function __debugInfo()
     {
         return [
-            'dispatch' => $this->dispatch,
+            'controller' => $this->controller,
+            'method' => $this->method,
             'param' => $this->param,
         ];
     }
