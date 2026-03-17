@@ -97,6 +97,7 @@ class Request extends BaseRequest
             '番茄小说' => '/Dragon/i',
             '支付宝' => '/Alipay/i',
             '哔哩哔哩' => '/Bili/i',
+            'Facebook' => '/FB_IAB/i',
             '微信小程序' => '/miniprogram/i',
             '腾讯视频' => '/qqlivebrowser/i',
             '腾讯新闻' => '/qqnews/i',
